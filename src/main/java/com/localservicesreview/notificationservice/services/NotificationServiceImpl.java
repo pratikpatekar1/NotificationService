@@ -1,10 +1,7 @@
 package com.localservicesreview.notificationservice.services;
 
 import com.localservicesreview.notificationservice.ThirdPartyUserService.ThirdPartyUserService;
-import com.localservicesreview.notificationservice.dtos.NotificationRequestDto;
-import com.localservicesreview.notificationservice.dtos.NotificationResponseDto;
-import com.localservicesreview.notificationservice.dtos.SendNotificationResponseDto;
-import com.localservicesreview.notificationservice.dtos.UserDetailsDto;
+import com.localservicesreview.notificationservice.dtos.*;
 import com.localservicesreview.notificationservice.exceptions.BadRequestException;
 import com.localservicesreview.notificationservice.exceptions.ForbiddenRequestException;
 import com.localservicesreview.notificationservice.exceptions.NotFoundException;
@@ -18,7 +15,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 @Primary
@@ -56,14 +52,14 @@ public class NotificationServiceImpl implements NotificationService {
     }
     @Override
     @Async
-    public void sendBulkNotification(NotificationRequestDto notificationRequestDto) throws BadRequestException, NotFoundException {
-        NotificationChannelType notificationChannelType = NotificationChannelType.fromString(notificationRequestDto.getChannel());
+    public void sendBulkNotification(BulkNotificationRequestDto bulkNotificationRequestDto) throws BadRequestException, NotFoundException {
+        NotificationChannelType notificationChannelType = NotificationChannelType.fromString(bulkNotificationRequestDto.getChannel());
         if(notificationChannelType==null){
             throw new BadRequestException("Invalid Notification Channel Type");
         }
-        Optional<List<UserPreference>>userPreferenceListOptional = userPreferenceRepository.findByServiceIdAndSubscribed(UUID.fromString(notificationRequestDto.getService_id()),true);
+        Optional<List<UserPreference>>userPreferenceListOptional = userPreferenceRepository.findByServiceIdAndSubscribed(UUID.fromString(bulkNotificationRequestDto.getService_id()),true);
         if(userPreferenceListOptional.isEmpty()){
-            throw new NotFoundException("No user is subscribed to the given service: "+notificationRequestDto.getService_id());
+            throw new NotFoundException("No user is subscribed to the given service: "+ bulkNotificationRequestDto.getService_id());
         }
         List<UserPreference>userPreferenceList = userPreferenceListOptional.get();
         for(UserPreference userPreference: userPreferenceList){
@@ -71,11 +67,11 @@ public class NotificationServiceImpl implements NotificationService {
                     .userId(userPreference.getUserId())
                     .deliveryStatus(NotificationDeliveryStatus.PENDING)
                     .retryCount(0)
-                    .messageBody(notificationRequestDto.getData())
-                    .imageURL(notificationRequestDto.getImage_url())
+                    .messageBody(bulkNotificationRequestDto.getData())
+                    .imageURL(bulkNotificationRequestDto.getImage_url())
                     .channelType(notificationChannelType)
-                    .type(NotificationType.fromString(notificationRequestDto.getType()))
-                    .subject(notificationRequestDto.getSubject())
+                    .type(NotificationType.fromString(bulkNotificationRequestDto.getType()))
+                    .subject(bulkNotificationRequestDto.getSubject())
                     .build();
             Notification savedNotification = notificationRepository.save(notification);
             if(savedNotification==null){
@@ -90,7 +86,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public SendNotificationResponseDto sendSingleNotification(NotificationRequestDto notificationRequestDto,String userId) throws BadRequestException, NotFoundException {
+    public SendNotificationResponseDto sendSingleNotification(NotificationRequestDto notificationRequestDto, String userId) throws BadRequestException, NotFoundException {
         NotificationChannelType notificationChannelType = NotificationChannelType.fromString(notificationRequestDto.getChannel());
         if(notificationChannelType==null){
             throw new BadRequestException("Invalid Notification Channel Type");

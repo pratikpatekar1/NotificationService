@@ -1,5 +1,6 @@
 package com.localservicesreview.notificationservice.services;
 
+import com.localservicesreview.notificationservice.dtos.BulkNotificationRequestDto;
 import com.localservicesreview.notificationservice.dtos.NotificationRequestDto;
 import com.localservicesreview.notificationservice.dtos.NotificationResponseDto;
 import com.localservicesreview.notificationservice.dtos.SendNotificationResponseDto;
@@ -8,12 +9,11 @@ import com.localservicesreview.notificationservice.exceptions.ForbiddenRequestEx
 import com.localservicesreview.notificationservice.exceptions.NotFoundException;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public interface NotificationService{
-    void sendBulkNotification(NotificationRequestDto notificationRequestDto) throws BadRequestException, NotFoundException;
+    void sendBulkNotification(BulkNotificationRequestDto bulkNotificationRequestDto) throws BadRequestException, NotFoundException;
 
-    SendNotificationResponseDto sendSingleNotification(NotificationRequestDto notificationRequestDto, String userId) throws BadRequestException, NotFoundException;
+    SendNotificationResponseDto sendSingleNotification(NotificationRequestDto bulkNotificationRequestDto, String userId) throws BadRequestException, NotFoundException;
 
     List<NotificationResponseDto> getAllNotifications(String userId) throws NotFoundException;
     NotificationResponseDto getNotification(String userId, String notificationId) throws NotFoundException, ForbiddenRequestException;

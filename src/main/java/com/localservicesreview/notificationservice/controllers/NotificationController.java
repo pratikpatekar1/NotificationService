@@ -1,5 +1,6 @@
 package com.localservicesreview.notificationservice.controllers;
 
+import com.localservicesreview.notificationservice.dtos.BulkNotificationRequestDto;
 import com.localservicesreview.notificationservice.dtos.NotificationRequestDto;
 import com.localservicesreview.notificationservice.dtos.SendNotificationResponseDto;
 import com.localservicesreview.notificationservice.exceptions.BadRequestException;
@@ -11,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.concurrent.CompletableFuture;
-
 @RestController
 @RequestMapping("/notification")
 public class NotificationController {
@@ -22,9 +21,12 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
     @PostMapping("/send")
-    public ResponseEntity<?> sendBulkNotification(@RequestBody NotificationRequestDto notificationRequestDto) throws BadRequestException, NotFoundException {
-        notificationService.sendBulkNotification(notificationRequestDto);
-        return new ResponseEntity<>("Notifications are being sent...", HttpStatus.OK);
+    public ResponseEntity<?> sendBulkNotification(@RequestBody BulkNotificationRequestDto bulkNotificationRequestDto) throws BadRequestException, NotFoundException {
+        notificationService.sendBulkNotification(bulkNotificationRequestDto);
+        SendNotificationResponseDto sendNotificationResponseDto = new SendNotificationResponseDto();
+        sendNotificationResponseDto.setMessage("Notifications are being sent...");
+        sendNotificationResponseDto.setService_id(bulkNotificationRequestDto.getService_id());
+        return new ResponseEntity<>(sendNotificationResponseDto, HttpStatus.OK);
     }
 
     @PostMapping("/send/{userid}")

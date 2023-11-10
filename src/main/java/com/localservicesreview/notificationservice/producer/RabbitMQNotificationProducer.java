@@ -1,7 +1,6 @@
 package com.localservicesreview.notificationservice.producer;
 
 import com.localservicesreview.notificationservice.dtos.NotificationProducerDto;
-import com.localservicesreview.notificationservice.dtos.NotificationRequestDto;
 import com.localservicesreview.notificationservice.dtos.UserDetailsDto;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

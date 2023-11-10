@@ -1,6 +1,5 @@
 package com.localservicesreview.notificationservice.producer;
 
-import com.localservicesreview.notificationservice.dtos.NotificationRequestDto;
 import com.localservicesreview.notificationservice.dtos.UserDetailsDto;
 
 import java.util.UUID;

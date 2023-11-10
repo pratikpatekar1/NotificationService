@@ -25,15 +25,16 @@ public class EmailService{
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(javaMailSender.createMimeMessage(),true);
             MimeMailMessage mimeMailMessage = new MimeMailMessage(mimeMessageHelper);
 
-            URL url = new URL(imageURL);
-            URLDataSource dataSource = new URLDataSource(url);
-            mimeMessageHelper.addAttachment("image",dataSource);
+            if(imageURL!=null){
+                URL url = new URL(imageURL);
+                URLDataSource dataSource = new URLDataSource(url);
+                mimeMessageHelper.addAttachment("image",dataSource);
+                body+= "<br><br><img src='cid:image' width='100%' height='100%'>";
+            }
 
             mimeMailMessage.setFrom(fromEmail);
             mimeMailMessage.setTo(to);
             mimeMailMessage.setSubject(subject);
-
-            body+= "<br><br><img src='cid:image' width='100%' height='100%'>";
 
             MimeBodyPart mimeBodyPart = new MimeBodyPart();
             mimeBodyPart.setContent(body,"text/html");
