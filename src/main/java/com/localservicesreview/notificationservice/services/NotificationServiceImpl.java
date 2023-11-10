@@ -14,9 +14,11 @@ import com.localservicesreview.notificationservice.repositories.NotificationRepo
 import com.localservicesreview.notificationservice.repositories.UserPreferenceRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Primary
@@ -53,7 +55,8 @@ public class NotificationServiceImpl implements NotificationService {
         return notificationResponseDto;
     }
     @Override
-    public SendNotificationResponseDto sendBulkNotification(NotificationRequestDto notificationRequestDto) throws BadRequestException, NotFoundException {
+    @Async
+    public void sendBulkNotification(NotificationRequestDto notificationRequestDto) throws BadRequestException, NotFoundException {
         NotificationChannelType notificationChannelType = NotificationChannelType.fromString(notificationRequestDto.getChannel());
         if(notificationChannelType==null){
             throw new BadRequestException("Invalid Notification Channel Type");
@@ -84,10 +87,6 @@ public class NotificationServiceImpl implements NotificationService {
             }
             rabbitMQProducer.sendNotificationEvent(exchangeName,emailRoutingKey,userDetailsDto, savedNotification.getId());
         }
-        SendNotificationResponseDto sendNotificationResponseDto = new SendNotificationResponseDto();
-        sendNotificationResponseDto.setService_id(notificationRequestDto.getService_id());
-        sendNotificationResponseDto.setMessage("Notification Sent Successfully");
-        return sendNotificationResponseDto;
     }
 
     @Override

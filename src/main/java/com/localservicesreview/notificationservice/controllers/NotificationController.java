@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 @RequestMapping("/notification")
 public class NotificationController {
@@ -21,14 +23,14 @@ public class NotificationController {
     }
     @PostMapping("/send")
     public ResponseEntity<?> sendBulkNotification(@RequestBody NotificationRequestDto notificationRequestDto) throws BadRequestException, NotFoundException {
-        SendNotificationResponseDto sendNotificationResponseDto = notificationService.sendBulkNotification(notificationRequestDto);
-        return new ResponseEntity<>(sendNotificationResponseDto, HttpStatus.NO_CONTENT);
+        notificationService.sendBulkNotification(notificationRequestDto);
+        return new ResponseEntity<>("Notifications are being sent...", HttpStatus.OK);
     }
 
     @PostMapping("/send/{userid}")
     public ResponseEntity<?> sendSingleNotification(@RequestBody NotificationRequestDto notificationRequestDto, @PathVariable("userid") String userId) throws BadRequestException, NotFoundException {
         SendNotificationResponseDto sendNotificationResponseDto = notificationService.sendSingleNotification(notificationRequestDto,userId);
-        return new ResponseEntity<>(sendNotificationResponseDto, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(sendNotificationResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/get")

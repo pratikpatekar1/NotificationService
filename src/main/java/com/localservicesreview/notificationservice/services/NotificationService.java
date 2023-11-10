@@ -8,9 +8,10 @@ import com.localservicesreview.notificationservice.exceptions.ForbiddenRequestEx
 import com.localservicesreview.notificationservice.exceptions.NotFoundException;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface NotificationService{
-    SendNotificationResponseDto sendBulkNotification(NotificationRequestDto notificationRequestDto) throws BadRequestException, NotFoundException;
+    void sendBulkNotification(NotificationRequestDto notificationRequestDto) throws BadRequestException, NotFoundException;
 
     SendNotificationResponseDto sendSingleNotification(NotificationRequestDto notificationRequestDto, String userId) throws BadRequestException, NotFoundException;
 
