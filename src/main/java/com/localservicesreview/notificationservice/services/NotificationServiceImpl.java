@@ -53,6 +53,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Async
     public void sendBulkNotification(BulkNotificationRequestDto bulkNotificationRequestDto) throws BadRequestException, NotFoundException {
+        if(bulkNotificationRequestDto.getService_id()==null){
+            throw new BadRequestException("Service Id is required");
+        }
         NotificationChannelType notificationChannelType = NotificationChannelType.fromString(bulkNotificationRequestDto.getChannel());
         if(notificationChannelType==null){
             throw new BadRequestException("Invalid Notification Channel Type");
